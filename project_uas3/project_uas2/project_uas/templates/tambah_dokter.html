@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Tambah Dokter - HospitalCare Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">
+            Tambah Dokter Baru</h1>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('tambah_dokter') }}">
+            <div class="form-group">
+                <label for="nama" class="form-label">Nama Lengkap Dokter</label>
+                <input type="text" id="nama" name="nama" class="form-control" 
+                       placeholder="Contoh: Dr. Ahmad Santoso, Sp.PD" required>
+                <small style="color: #6b7280;">
+                    Tip: Sertakan gelar dan spesialisasi (Sp.PD, Sp.A, Sp.JP, dll)
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="spesialisasi" class="form-label">Bidang Spesialisasi</label>
+                <input type="text" id="spesialisasi" name="spesialisasi" class="form-control" 
+                       placeholder="Contoh: Penyakit Dalam, Anak, Jantung, Bedah" required>
+                <small style="color: #6b7280;">
+                    Contoh spesialisasi: Penyakit Dalam, Anak, Jantung, Bedah, THT, Mata, dll
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="jumlah_pasien" class="form-label">Jumlah Pasien yang Ditangani</label>
+                <input type="number" id="jumlah_pasien" name="jumlah_pasien" class="form-control" 
+                       placeholder="Contoh: 15" min="0" max="1000" required>
+            </div>
+
+            <div class="card" style="background: #f0fdf4; padding: 1rem; margin-bottom: 1rem; border: 2px solid #16a34a;">
+                <p style="margin: 0;"><strong>Preview Gaji (akan dihitung otomatis):</strong></p>
+                <p style="margin: 0.5rem 0 0 0;">Gaji Pokok: Rp 15.000.000 + (Jumlah Pasien × Rp 200.000)</p>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-success">
+                    ✅ Simpan Data Dokter
+                </button>
+                <a href="{{ url_for('dokter') }}" class="btn btn-danger">
+                    ❌ Batal
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

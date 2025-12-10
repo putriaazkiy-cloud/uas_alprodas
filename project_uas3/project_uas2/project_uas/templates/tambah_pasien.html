@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+
+{% block title %}Tambah Pasien - HospitalCare Management System{% endblock %}
+
+
+{% block content %}
+
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">➕ Tambah Pasien Baru</h2>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <div class="card-body">
+            <form method="POST" id="formPasien">
+                <div class="form-group">
+                    <label for="nama" class="form-label">Nama Lengkap Pasien *</label>
+                    <input type="text" id="nama" name="nama" class="form-control" required>
+                </div>
+
+                <input type="hidden" id="umur" name="umur">   
+
+                <div class="form-group">
+                    <label class="form-label" for="tgl_lahir">Tanggal Lahir Pasien *</label>
+                    <input class="form-input" type="date" id="tgl_lahir" name="tgl_lahir" required>
+                    <small id="umur_display" style="color:#555; margin-top:5px; display:block;"></small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="jenis_kelamin">Jenis Kelamin *</label>
+                    <select id="jenis_kelamin" name="jenis_kelamin" required>
+                        <option value="">-- Pilih --</option>
+                        <option value="Laki-laki">Laki-laki</option>
+                        <option value="Perempuan">Perempuan</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="alamat">Alamat</label>
+                    <input class="form-control" type="text" id="alamat" name="alamat">
+                </div>
+
+                <div class="form-group">
+                    <label for="gol_darah">Golongan Darah</label>
+                    <select id="gol_darah" name="gol_darah">
+                        <option value="">-- Pilih --</option>
+                        <option>A</option><option>B</option><option>AB</option><option>O</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="no_telepon">Nomor Telepon</label>
+                    <input class="form-control" type="tel" id="no_telepon" name="no_telepon" pattern="[0-9]+" title="Hanya angka yang diperbolehkan" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="wali_pasien">Nama Wali Pasien</label>
+                    <input class="form-control" type="text" id="wali_pasien" name="wali_pasien">
+                </div>
+
+                <div class="form-group">
+                    <label for="tanggal_masuk">📅 Tanggal Masuk Rumah Sakit *</label>
+                    <input type="date" id="tanggal_masuk" name="tanggal_masuk" value="{{ today }}" required max="{{ today }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="diagnosa">Diagnosa Penyakit *</label>
+                    <textarea id="diagnosa" name="diagnosa" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-group">
+            <label for="status_pasien">Kelas</label>
+            <select id="status_pasien" name="status_pasien" required>
+                <option value="">-- Kelas --</option>
+                <option value="VVIP">VVIP</option>
+                <option value="VIP">VIP</option>
+                <option value="BPJS Kelas 1">BPJS Kelas 1</option>
+                <option value="BPJS Kelas 2">BPJS Kelas 2</option>
+                <option value="BPJS Kelas 3">BPJS Kelas 3</option>
+                <option value="Umum">Umum</option>
+            </select>
+        </div>
+
+        <!-- 🔥 DROPDOWN BARU: STATUS PERAWATAN -->
+        <!-- STATUS PERAWATAN -->
+<div class="form-group">
+    <label for="status_perawatan">Status Perawatan</label>
+    <select id="status_perawatan" name="status_perawatan" required>
+        <option value="">-- Pilih Status Perawatan --</option>
+        <option value="Rawat Inap">Rawat Inap</option>
+        <option value="Intensif">Intensif (ICU/NICU)</option>
+        <option value="Isolasi">Isolasi</option>
+        <option value="Ibu & Anak">Ibu & Anak</option>
+        <option value="Anak">Anak</option>
+        <option value="Post Operasi">Post Operasi</option>
+        <option value="Psikiatri">Psikiatri</option>
+        <option value="Geriatri">Geriatri</option>
+        <option value="Darurat">Darurat / UGD</option>
+    </select>
+</div>
+
+<!-- RUANGAN -->
+<div class="form-group">
+    <label for="ruangan">Ruangan</label>
+    <select id="ruangan" name="ruangan">
+        <option value="">-- Ruangan Tersedia --</option>
+    </select>
+</div>
+
+
+
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">💾 Simpan Data</button>
+                    <a href="{{ url_for('pasien') }}" class="btn btn-secondary">❌ Batal</a>
+                </div>
+            </form>
+    </div>
+</div>
+
+<script>
+const today = '{{ today }}';
+const BIAYA_PER_HARI = 500000;
+
+// ========================
+// Toggle tanggal keluar
+// ========================
+function toggleTanggalKeluar() {
+    const checkbox = document.getElementById('sudah_keluar');
+    const tanggalKeluarGroup = document.getElementById('tanggal_keluar_group');
+    const tanggalKeluarInput = document.getElementById('tanggal_keluar');
+
+    if (checkbox.checked) {
+        tanggalKeluarGroup.style.display = 'block';
+        tanggalKeluarInput.value = today;
+    } else {
+        tanggalKeluarGroup.style.display = 'none';
+        tanggalKeluarInput.value = '';
+    }
+
+    hitungLamaRawat();
+}
+
+// ========================
+// Hitung lama rawat & biaya
+// ========================
+function hitungLamaRawat() {
+    const tanggalMasuk = document.getElementById('tanggal_masuk').value;
+    const tanggalKeluar = document.getElementById('tanggal_keluar').value;
+    const umur = parseInt(document.getElementById('umur').value) || 0;
+
+    if (!tanggalMasuk) return;
+
+    const tglMasuk = new Date(tanggalMasuk);
+    const tglKeluar = tanggalKeluar ? new Date(tanggalKeluar) : new Date(today);
+
+    const diffTime = Math.abs(tglKeluar - tglMasuk);
+    const diffDays = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+
+    let biayaDasar = diffDays * BIAYA_PER_HARI;
+    let biayaTambahan = umur >= 60 ? biayaDasar * 0.2 : 0;
+    const biayaTotal = biayaDasar + biayaTambahan;
+
+    const infoDiv = document.getElementById('lamaRawatInfo');
+    const lamaRawatText = document.getElementById('lamaRawatText');
+    const biayaText = document.getElementById('biayaEstimasiText');
+
+    infoDiv.style.display = 'block';
+    lamaRawatText.textContent = tanggalKeluar ? `Lama Rawat: ${diffDays} hari` : `Lama Rawat (hingga hari ini): ${diffDays} hari`;
+    biayaText.textContent = `Estimasi Biaya: Rp ${biayaTotal.toLocaleString('id-ID')}`;
+    if (umur >= 60) biayaText.textContent += ` (termasuk biaya tambahan lansia 20%)`;
+}
+
+// ========================
+// Hitung umur otomatis
+// ========================
+const tglLahirInput = document.getElementById('tgl_lahir');
+const umurInput = document.getElementById('umur');
+const umurDisplay = document.getElementById('umur_display');
+
+tglLahirInput.addEventListener('change', () => {
+    const lahir = new Date(tglLahirInput.value);
+    const now = new Date();
+    let umur = now.getFullYear() - lahir.getFullYear();
+    if (now.getMonth() < lahir.getMonth() || (now.getMonth() === lahir.getMonth() && now.getDate() < lahir.getDate())) {
+        umur--;
+    }
+    umurInput.value = umur;
+    umurDisplay.textContent = `Umur otomatis: ${umur} tahun`;
+    hitungLamaRawat();
+});
+
+// ========================
+// Dropdown status, perawatan, ruangan
+// ========================
+const statusSelect = document.getElementById('status_pasien');
+const perawatanSelect = document.getElementById('status_perawatan');
+const ruanganSelect = document.getElementById('ruangan');
+
+// Enable perawatan saat status dipilih
+// Enable perawatan saat status dipilih
+statusSelect.addEventListener('change', () => {
+    if (statusSelect.value) {
+        perawatanSelect.disabled = false;  // hapus 'disabled' sehingga dikirim
+        perawatanSelect.value = "";         // reset pilihan
+        ruanganSelect.innerHTML = "<option value=''>-- Pilih Ruangan --</option>";
+        ruanganSelect.disabled = true;
+    } else {
+        perawatanSelect.disabled = true;
+        perawatanSelect.value = "";
+        ruanganSelect.disabled = true;
+        ruanganSelect.value = "";
+    }
+});
+
+// Load ruangan saat perawatan dipilih
+perawatanSelect.addEventListener('change', () => {
+    const status = statusSelect.value;
+    const perawatan = perawatanSelect.value;
+
+    if (!status || !perawatan) return;
+
+    ruanganSelect.innerHTML = "<option value=''>-- Memuat Ruangan --</option>";
+    ruanganSelect.disabled = true;
+
+    fetch(`/get_ruangan/${encodeURIComponent(status)}/${encodeURIComponent(perawatan)}`)
+        .then(res => res.json())
+        .then(data => {
+            if (!data || data.length === 0) {
+                ruanganSelect.innerHTML = "<option value=''>Tidak ada ruangan tersedia</option>";
+                ruanganSelect.disabled = false; // tetap dikirim meski kosong
+                return;
+            }
+            ruanganSelect.innerHTML = "<option value=''>-- Pilih Ruangan --</option>";
+            ruanganSelect.disabled = false;
+
+            data.forEach(r => {
+                const opt = document.createElement('option');
+                opt.value = r.id;
+                opt.textContent = r.nama;
+                ruanganSelect.appendChild(opt);
+            });
+        })
+        .catch(err => {
+            console.error('Error fetching ruangan:', err);
+            ruanganSelect.innerHTML = "<option value=''>Gagal memuat ruangan</option>";
+            ruanganSelect.disabled = false;
+        });
+});
+
+
+// ========================
+// Form validation
+// ========================
+document.getElementById('formPasien').addEventListener('submit', function(e) {
+    const tanggalMasuk = new Date(document.getElementById('tanggal_masuk').value);
+    const tanggalKeluarValue = document.getElementById('tanggal_keluar').value;
+
+    if (tanggalKeluarValue) {
+        const tanggalKeluar = new Date(tanggalKeluarValue);
+        if (tanggalKeluar < tanggalMasuk) {
+            e.preventDefault();
+            alert('Tanggal keluar tidak boleh lebih awal dari tanggal masuk!');
+            return false;
+        }
+    }
+});
+
+// ========================
+// Edit mode: enable dropdown jika sudah ada value
+// ========================
+if (statusSelect.value) perawatanSelect.disabled = false;
+if (perawatanSelect.value) ruanganSelect.disabled = false;
+
+// Event listeners tanggal & umur
+document.getElementById('tanggal_masuk').addEventListener('change', hitungLamaRawat);
+document.getElementById('tanggal_keluar').addEventListener('change', hitungLamaRawat);
+umurInput.addEventListener('input', hitungLamaRawat);
+</script>
+
+{% endblock %}

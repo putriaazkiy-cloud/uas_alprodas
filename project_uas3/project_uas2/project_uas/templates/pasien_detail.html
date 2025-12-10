@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Detail Pasien #{{ pasien.id }} - HospitalCare{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">🧾 Detail Pasien</h2>
+    </div>
+
+    <div class="card-body">
+        <a href="{{ url_for('pasien') }}" class="btn btn-secondary mb-3">
+            ← Kembali ke Daftar Pasien
+        </a>
+        <div class="row">
+            <div class="col-md-6">
+                <h3>👤 Data Diri</h3>
+                <ul class="list-group mb-4">
+                    <li class="list-group-item">
+                        <strong>ID:</strong> #{{ pasien.id }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Nama:</strong> {{ pasien.nama }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Umur:</strong> {{ pasien.umur }} tahun
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Tanggal Lahir:</strong> {{ pasien.tgl_lahir }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Jenis Kelamin:</strong> {{ pasien.jenis_kelamin }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Golongan Darah:</strong> {{ pasien.gol_darah }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Alamat:</strong> {{ pasien.alamat }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>No Telepon:</strong> {{ pasien.no_telepon }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Wali Pasien:</strong> {{ pasien.wali_pasien }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Status:</strong>
+                        {% if pasien.status == 'Kritis' %}
+                        <span class="badge badge-danger">Kritis</span>
+                        {% else %}
+                        <span class="badge badge-success">Kondisi Serius</span>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+<br>
+            <div class="col-md-6">
+                <h3>🩺 Informasi Medis</h3>
+                <ul class="list-group mb-4">
+                    <li class="list-group-item">
+                        <strong>Diagnosa:</strong> {{ pasien.diagnosa }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Ruangan:</strong> {{ pasien.ruangan.nama if pasien.ruangan else 'Tidak ada' }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Kelas:</strong> {{ pasien.status_pasien }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Status Perawatan:</strong> {{ pasien.status_perawatan }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Tanggal Masuk:</strong> {{ pasien.tanggal_masuk }}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Tanggal Keluar:</strong>
+                        {% if pasien.tanggal_keluar %}
+                            {{ pasien.tanggal_keluar }}
+                        {% else %}
+                            <span class="text-muted">Belum keluar</span>
+                        {% endif %}
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Lama Rawat:</strong> {{ pasien.lama_rawat }} hari
+                    </li>
+                    <li class="list-group-item">
+                        <strong>Biaya Total:</strong>
+                        <span class="text-primary">
+                            Rp {{ "{:,.0f}".format(pasien.biaya_total) }}
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+<br>
+        <div class="mt-4">
+            <a href="{{ url_for('edit_pasien', pasien_id=pasien.id) }}" class="btn btn-warning">
+                ✏️ Edit Pasien
+            </a>
+            <a href="{{ url_for('hapus_pasien', pasien_id=pasien.id) }}"
+               class="btn btn-danger"
+               onclick="return confirm('Yakin ingin menghapus pasien {{ pasien.nama }}?')">
+                🗑️ Hapus Pasien
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

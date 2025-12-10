@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Daftar Dokter - HospitalCare Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <div class="flex-between">
+            <h1 class="card-title">Daftar Dokter</h1>
+            <a href="{{ url_for('tambah_dokter') }}" class="btn btn-primary">
+                <i class="fi fi-sr-plus-small"></i>
+                Tambah Dokter
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('dokter') }}" class="search-bar">
+            <input type="text" name="search" class="form-control" 
+                   placeholder="Cari dokter berdasarkan nama atau spesialisasi..." 
+                   value="{{ search if search else '' }}">
+            <button type="submit" class="btn btn-primary">Cari</button>
+            {% if search %}
+            <a href="{{ url_for('dokter') }}" class="btn btn-warning">Reset</a>
+            {% endif %}
+        </form>
+
+        {% if dokter_list %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nama Dokter</th>
+                        <th>Spesialisasi</th>
+                        <th>Jumlah Pasien</th>
+                        <th>Gaji Total</th>
+                        <th>Tanggal Bergabung</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dokter in dokter_list %}
+                    <tr>
+                        <td><strong>#{{ dokter.id }}</strong></td>
+                        <td>{{ dokter.nama }}</td>
+                        <td><span class="badge badge-primary">{{ dokter.spesialisasi }}</span></td>
+                        <td>{{ dokter.jumlah_pasien }} pasien</td>
+                        <td><strong>Rp {{ "{:,.0f}".format(dokter.gaji) }}</strong></td>
+                        <td>{{ dokter.tanggal_bergabung }}</td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="{{ url_for('edit_dokter', dokter_id=dokter.id) }}" 
+                                   class="btn btn-warning btn-sm">Edit</a>
+                                <a href="{{ url_for('hapus_dokter', dokter_id=dokter.id) }}" 
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Yakin ingin menghapus dokter {{ dokter.nama }}?')">
+                                   Hapus
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center" style="padding: 3rem;">
+            <h3>😔 Tidak ada data dokter</h3>
+            <p>{% if search %}Tidak ada hasil untuk pencarian "{{ search }}"{% else %}Belum ada dokter terdaftar{% endif %}</p>
+            <a href="{{ url_for('tambah_dokter') }}" class="btn btn-primary mt-2">
+                Tambah Dokter Pertama
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

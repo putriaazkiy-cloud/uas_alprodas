@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - HospitalCare Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-icon">🏥</div>
+                <h1>HospitalCare<br>Management System</h1>
+                <p>Silakan login untuk melanjutkan</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            <span>
+                                {% if category == 'success' %}✅{% endif %}
+                                {% if category == 'danger' %}❌{% endif %}
+                                {% if category == 'warning' %}⚠️{% endif %}
+                                {{ message }}
+                            </span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('login') }}">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" id="username" name="username" class="form-control" 
+                        placeholder="Masukkan username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" 
+                        placeholder="Masukkan password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    Login
+                </button>
+
+                <div class="text-center mt-3">
+                    <p>Belum punya akun? <a href="{{ url_for('register') }}" style="color: var(--primary-color); font-weight: 600;">Daftar di sini</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

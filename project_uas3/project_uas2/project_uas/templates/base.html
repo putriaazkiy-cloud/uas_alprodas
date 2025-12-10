@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}HospitalCare Management System{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+</head>
+<body>
+    {% if session.username %}
+    <aside class="sidebar">
+        <div class="sidebar-brand">UNM Hospital
+            <h6 class="sidebar-">Sistem Monitoring Pasien dan Dokter</h6>
+        </div>
+        <h3 class="sidebar-"></h3>
+
+        <ul class="sidebar-nav">
+            <li><a href="{{ url_for('dashboard') }}"
+                class="{% if request.endpoint == 'dashboard' %}active{% endif %}">
+                <i class="fi fi-sr-dashboard-panel"></i> 
+                Dashboard</a></li>
+            <li><a href="{{ url_for('pasien') }}"
+                class="{% if request.endpoint == 'pasien' %}active{% endif %}">
+                <i class="fi fi-sr-procedures"></i>
+                Pasien</a></li>
+            <li><a href="{{ url_for('dokter') }}"
+                class="{% if request.endpoint == 'dokter' %}active{% endif %}">
+                <i class="fi fi-sr-user-md"></i>
+                Dokter</a></li>
+        </ul>
+
+        <div class="sidebar-user">
+            Halo, {{ session.username }}! <br>
+            <a href="{{ url_for('logout') }}" style="color: #900000;">Logout</a>
+        </div>
+    </aside>
+    {% endif %}
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <span>
+                            {% if category == 'success' %}✅{% endif %}
+                            {% if category == 'danger' %}❌{% endif %}
+                            {% if category == 'warning' %}⚠️{% endif %}
+                            {% if category == 'info' %}ℹ️{% endif %}
+                            {{ message }}
+                        </span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

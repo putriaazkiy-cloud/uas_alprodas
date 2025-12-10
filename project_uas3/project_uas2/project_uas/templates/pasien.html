@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Daftar Pasien - HospitalCare Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <div class="flex-between">
+            <h1 class="card-title">👥 Daftar Pasien</h1>
+            <a href="{{ url_for('tambah_pasien') }}" class="btn btn-primary">
+                <i class="fi fi-sr-plus-small"></i>
+                Tambah Pasien
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('pasien') }}" class="search-bar">
+            <input type="text" name="search" class="form-control" 
+                placeholder="Cari pasien berdasarkan nama atau diagnosa..." 
+                value="{{ search if search else '' }}">
+            <button type="submit" class="btn btn-primary">Cari</button>
+            {% if search %}
+            <a href="{{ url_for('pasien') }}" class="btn btn-warning">Reset</a>
+            {% endif %}
+        </form>
+
+        {% if pasien_list %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nama Pasien</th>
+                        <th>Umur</th>
+                        <th>Status Diagnosa</th>
+                        <th>Lama Rawat</th>
+                        <th>Status</th>
+                        <th>Tanggal Masuk</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pasien in pasien_list %}
+                    <tr>
+                        <td><strong>#{{ pasien.id }}</strong></td>
+                        <td>{{ pasien.nama }}</td>
+                        <td>{{ pasien.umur }} tahun</td>
+                        <td>{{ pasien.diagnosa }}</td>
+                        <td>{{ pasien.lama_rawat }} hari</td>
+                        <td>
+                            {% if pasien.status == 'Kritis' %}
+                            <span class="badge badge-danger">Kritis</span>
+                            {% else %}
+                            <span class="badge badge-success">Kondisi Serius</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ pasien.tanggal_masuk }}</td>
+                        <td>
+                            <a href="{{ url_for('detail_pasien', pasien_id=pasien.id) }}" 
+                            class="btn btn-info btn-sm">
+                                Detail
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center" style="padding: 3rem;">
+            <h3>😔 Tidak ada data pasien</h3>
+            <p>{% if search %}Tidak ada hasil untuk pencarian "{{ search }}"{% else %}Belum ada pasien terdaftar{% endif %}</p>
+            <a href="{{ url_for('tambah_pasien') }}" class="btn btn-primary mt-2">
+                <i class="fi fi-sr-plus-small"></i>
+                Tambah Pasien Pertama
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

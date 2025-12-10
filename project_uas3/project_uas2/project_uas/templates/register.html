@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrasi - HospitalCare Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-icon">📝</div>
+                <h1>Registrasi Akun</h1>
+                <p>Buat akun baru untuk menggunakan sistem</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            <span>
+                                {% if category == 'success' %}✅{% endif %}
+                                {% if category == 'danger' %}❌{% endif %}
+                                {{ message }}
+                            </span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('register') }}">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" id="username" name="username" class="form-control" 
+                           placeholder="Pilih username" required minlength="4">
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" 
+                        placeholder="Minimal 6 karakter" required minlength="6">
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password" class="form-label">Konfirmasi Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" 
+                        class="form-control" placeholder="Ulangi password" required>
+                </div>
+
+                <button type="submit" class="btn btn-success" style="width: 100%;">
+                    Daftar Sekarang
+                </button>
+
+                <div class="text-center mt-3">
+                    <p>Sudah punya akun? <a href="{{ url_for('login') }}" style="color: var(--primary-color); font-weight: 600;">Login di sini</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

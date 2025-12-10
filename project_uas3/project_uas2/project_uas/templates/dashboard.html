@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - UNM Hospital Monitoring{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">Dashboard UNM Hospital</h1>
+    </div>
+    <div class="card-body">
+        <p>Selamat datang, <strong>{{ username }}</strong>! Berikut adalah ringkasan sistem monitoring pasien dan dokter.</p>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon primary">
+            👥
+        </div>
+        <div class="stat-content">
+            <h3>{{ stats.total_pasien }}</h3>
+            <p>Total Pasien</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon success">
+            ✅
+        </div>
+        <div class="stat-content">
+            <h3>{{ stats.pasien_stabil }}</h3>
+            <p>Pasien Kondisi Serius</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon danger">
+            ⚠️
+        </div>
+        <div class="stat-content">
+            <h3>{{ stats.pasien_kritis }}</h3>
+            <p>Pasien Kritis</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon info">
+            👨‍⚕️
+        </div>
+        <div class="stat-content">
+            <h3>{{ stats.total_dokter }}</h3>
+            <p>Total Dokter</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon warning">
+            💰
+        </div>
+        <div class="stat-content">
+            <h3>Rp {{ "{:,.0f}".format(stats.total_biaya) }}</h3>
+            <p>Total Biaya Perawatan</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon success">
+            💵
+        </div>
+        <div class="stat-content">
+            <h3>Rp {{ "{:,.0f}".format(stats.total_gaji) }}</h3>
+            <p>Total Gaji Dokter</p>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Quick Actions</h2>
+    </div>
+    <div class="card-body">
+        <div class="btn-group">
+            <a href="{{ url_for('tambah_pasien') }}" class="btn btn-primary">
+                <i class="fi fi-sr-plus-small"></i>
+                Tambah Pasien Baru
+            </a>
+            <a href="{{ url_for('tambah_dokter') }}" class="btn btn-success">
+                <i class="fi fi-sr-plus-small"></i>
+                Tambah Dokter Baru
+            </a>
+            <a href="{{ url_for('pasien') }}" class="btn btn-warning">
+                <i class="fi fi-sr-plus-small"></i>
+                Lihat Semua Pasien
+            </a>
+            <a href="{{ url_for('dokter') }}" class="btn btn-info">
+                <i class="fi fi-sr-note"></i>
+                Lihat Semua Dokter
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

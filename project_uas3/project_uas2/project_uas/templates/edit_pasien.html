@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Pasien - HospitalCare Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">✏️ Edit Pasien</h2>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="card-body">
+        <div class="alert alert-info">
+            Sedang mengedit data pasien: <strong>{{ pasien.nama }} (ID: #{{ pasien.id }})</strong>
+        </div>
+
+        <form method="POST" action="{{ url_for('edit_pasien', pasien_id=pasien.id) }}" id="formPasien">
+            <div class="form-group">
+                <label for="nama" class="form-label">Nama Lengkap Pasien *</label>
+                <input type="text" id="nama" name="nama" class="form-control" value="{{ pasien.nama }}" required>
+            </div>
+
+            <input type="hidden" id="umur" name="umur" value="{{ pasien.umur }}">
+
+            <div class="form-group">
+                <label class="form-label" for="tgl_lahir">Tanggal Lahir Pasien *</label>
+                <input class="form-input" type="date" id="tgl_lahir" name="tgl_lahir" value="{{ pasien.tgl_lahir }}" required>
+                <small id="umur_display" style="color:#555; margin-top:5px; display:block;">Umur otomatis: {{ pasien.umur }} tahun</small>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="jenis_kelamin">Jenis Kelamin *</label>
+                <select id="jenis_kelamin" name="jenis_kelamin" required>
+                    <option value="">-- Pilih --</option>
+                    <option value="Laki-laki" {% if pasien.jenis_kelamin == 'Laki-laki' %}selected{% endif %}>Laki-laki</option>
+                    <option value="Perempuan" {% if pasien.jenis_kelamin == 'Perempuan' %}selected{% endif %}>Perempuan</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="alamat">Alamat</label>
+                <input class="form-control" type="text" id="alamat" name="alamat" value="{{ pasien.alamat }}">
+            </div>
+
+            <div class="form-group">
+                <label for="gol_darah">Golongan Darah</label>
+                <select id="gol_darah" name="gol_darah">
+                    <option value="">-- Pilih --</option>
+                    <option {% if pasien.gol_darah == 'A' %}selected{% endif %}>A</option>
+                    <option {% if pasien.gol_darah == 'B' %}selected{% endif %}>B</option>
+                    <option {% if pasien.gol_darah == 'AB' %}selected{% endif %}>AB</option>
+                    <option {% if pasien.gol_darah == 'O' %}selected{% endif %}>O</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="no_telepon">Nomor Telepon</label>
+                <input class="form-control" type="tel" id="no_telepon" name="no_telepon" value="{{ pasien.no_telepon }}" pattern="[0-9]+" title="Hanya angka yang diperbolehkan" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="wali_pasien">Nama Wali Pasien</label>
+                <input class="form-control" type="text" id="wali_pasien" name="wali_pasien" value="{{ pasien.wali_pasien }}">
+            </div>
+
+            <div class="form-group">
+                <label for="tanggal_masuk">📅 Tanggal Masuk Rumah Sakit *</label>
+                <input type="date" id="tanggal_masuk" name="tanggal_masuk" value="{{ pasien.tanggal_masuk }}" required max="{{ today }}">
+            </div>
+
+            <div class="form-group">
+                <label for="diagnosa">Diagnosa Penyakit *</label>
+                <textarea id="diagnosa" name="diagnosa" rows="3" required>{{ pasien.diagnosa }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="status_pasien">Kelas</label>
+                <select id="status_pasien" name="status_pasien" required>
+                    <option value="">-- Kelas --</option>
+                    <option value="VVIP" {% if pasien.status_pasien == 'VVIP' %}selected{% endif %}>VVIP</option>
+                    <option value="VIP" {% if pasien.status_pasien == 'VIP' %}selected{% endif %}>VIP</option>
+                    <option value="BPJS Kelas 1" {% if pasien.status_pasien == 'BPJS Kelas 1' %}selected{% endif %}>BPJS Kelas 1</option>
+                    <option value="BPJS Kelas 2" {% if pasien.status_pasien == 'BPJS Kelas 2' %}selected{% endif %}>BPJS Kelas 2</option>
+                    <option value="BPJS Kelas 3" {% if pasien.status_pasien == 'BPJS Kelas 3' %}selected{% endif %}>BPJS Kelas 3</option>
+                    <option value="Umum" {% if pasien.status_pasien == 'Umum' %}selected{% endif %}>Umum</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="status_perawatan">Status Perawatan</label>
+                <select id="status_perawatan" name="status_perawatan" required>
+                    <option value="">-- Pilih Status Perawatan --</option>
+                    <option value="Rawat Inap" {% if pasien.status_perawatan == 'Rawat Inap' %}selected{% endif %}>Rawat Inap</option>
+                    <option value="Intensif" {% if pasien.status_perawatan == 'Intensif' %}selected{% endif %}>Intensif (ICU/NICU)</option>
+                    <option value="Isolasi" {% if pasien.status_perawatan == 'Isolasi' %}selected{% endif %}>Isolasi</option>
+                    <option value="Ibu & Anak" {% if pasien.status_perawatan == 'Ibu & Anak' %}selected{% endif %}>Ibu & Anak</option>
+                    <option value="Anak" {% if pasien.status_perawatan == 'Anak' %}selected{% endif %}>Anak</option>
+                    <option value="Post Operasi" {% if pasien.status_perawatan == 'Post Operasi' %}selected{% endif %}>Post Operasi</option>
+                    <option value="Psikiatri" {% if pasien.status_perawatan == 'Psikiatri' %}selected{% endif %}>Psikiatri</option>
+                    <option value="Geriatri" {% if pasien.status_perawatan == 'Geriatri' %}selected{% endif %}>Geriatri</option>
+                    <option value="Darurat" {% if pasien.status_perawatan == 'Darurat' %}selected{% endif %}>Darurat / UGD</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="ruangan">Ruangan</label>
+                <select id="ruangan" name="ruangan">
+                    <option value="">-- Ruangan Tersedia --</option>
+                    
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="sudah_sembuh" name="sudah_sembuh" value="1">
+                    ✅ Pasien sudah sembuh (akan mengatur tanggal keluar hari ini)
+                </label>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">💾 Simpan Perubahan</button>
+                <a href="{{ url_for('detail_pasien', pasien_id=pasien.id) }}" class="btn btn-secondary">❌ Batal</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+const today = '{{ today }}';
+const BIAYA_PER_HARI = 500000;
+
+function hitungLamaRawat() {
+    const tanggalMasuk = document.getElementById('tanggal_masuk').value;
+    const umur = parseInt(document.getElementById('umur').value) || 0;
+
+    if (!tanggalMasuk) return;
+
+    const tglMasuk = new Date(tanggalMasuk);
+    const tglKeluar = new Date(today);
+
+    const diffTime = Math.abs(tglKeluar - tglMasuk);
+    const diffDays = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+
+    let biayaDasar = diffDays * BIAYA_PER_HARI;
+    let biayaTambahan = umur >= 60 ? biayaDasar * 0.2 : 0;
+    const biayaTotal = biayaDasar + biayaTambahan;
+
+    
+}
+
+const tglLahirInput = document.getElementById('tgl_lahir');
+const umurInput = document.getElementById('umur');
+const umurDisplay = document.getElementById('umur_display');
+
+tglLahirInput.addEventListener('change', () => {
+    const lahir = new Date(tglLahirInput.value);
+    const now = new Date();
+    let umur = now.getFullYear() - lahir.getFullYear();
+    if (now.getMonth() < lahir.getMonth() || (now.getMonth() === lahir.getMonth() && now.getDate() < lahir.getDate())) {
+        umur--;
+    }
+    umurInput.value = umur;
+    umurDisplay.textContent = `Umur otomatis: ${umur} tahun`;
+    hitungLamaRawat();
+});
+
+const statusSelect = document.getElementById('status_pasien');
+const perawatanSelect = document.getElementById('status_perawatan');
+const ruanganSelect = document.getElementById('ruangan');
+
+statusSelect.addEventListener('change', () => {
+    if (statusSelect.value) {
+        perawatanSelect.disabled = false;
+        perawatanSelect.value = "";
+        ruanganSelect.innerHTML = "<option value=''>-- Pilih Ruangan --</option>";
+        ruanganSelect.disabled = true;
+    } else {
+        perawatanSelect.disabled = true;
+        perawatanSelect.value = "";
+        ruanganSelect.disabled = true;
+        ruanganSelect.value = "";
+    }
+});
+
+
+perawatanSelect.addEventListener('change', () => {
+    const status = statusSelect.value;
+    const perawatan = perawatanSelect.value;
+
+    if (!status || !perawatan) return;
+
+    ruanganSelect.innerHTML = "<option value=''>-- Memuat Ruangan --</option>";
+    ruanganSelect.disabled = true;
+
+    fetch(`/get_ruangan/${encodeURIComponent(status)}/${encodeURIComponent(perawatan)}?patient_id={{ pasien.id }}`)
+        .then(res => res.json())
+        .then(data => {
+            if (!data || data.length === 0) {
+                ruanganSelect.innerHTML = "<option value=''>Tidak ada ruangan tersedia</option>";
+                ruanganSelect.disabled = false;
+                return;
+            }
+            ruanganSelect.innerHTML = "<option value=''>-- Pilih Ruangan --</option>";
+            ruanganSelect.disabled = false;
+
+            data.forEach(r => {
+                const opt = document.createElement('option');
+                opt.value = r.id;
+                opt.textContent = r.nama;
+                if (r.id == '{{ pasien.ruangan_id if pasien.ruangan_id else "" }}') opt.selected = true; // Assuming ruangan_id is available
+                ruanganSelect.appendChild(opt);
+            });
+        })
+        .catch(err => {
+            console.error('Error fetching ruangan:', err);
+            ruanganSelect.innerHTML = "<option value=''>Gagal memuat ruangan</option>";
+            ruanganSelect.disabled = false;
+        });
+});
+
+
+document.getElementById('formPasien').addEventListener('submit', function(e) {
+
+});
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (statusSelect.value) perawatanSelect.disabled = false;
+    if (perawatanSelect.value) {
+        perawatanSelect.dispatchEvent(new Event('change'));
+    }
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Dokter - HospitalCare Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">Edit Data Dokter</h1>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-info">
+            Sedang mengedit data dokter: <strong>{{ dokter.nama }} (ID: #{{ dokter.id }})</strong>
+        </div>
+
+        <form method="POST" action="{{ url_for('edit_dokter', dokter_id=dokter.id) }}">
+            <div class="form-group">
+                <label for="nama" class="form-label">Nama Lengkap Dokter</label>
+                <input type="text" id="nama" name="nama" class="form-control" 
+                       value="{{ dokter.nama }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="spesialisasi" class="form-label">Bidang Spesialisasi</label>
+                <input type="text" id="spesialisasi" name="spesialisasi" class="form-control" 
+                       value="{{ dokter.spesialisasi }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="jumlah_pasien" class="form-label">Jumlah Pasien yang Ditangani</label>
+                <input type="number" id="jumlah_pasien" name="jumlah_pasien" class="form-control" 
+                       value="{{ dokter.jumlah_pasien }}" min="0" max="1000" required>
+            </div>
+
+            <div class="card" style="background: #f9fafb; padding: 1rem; margin-bottom: 1rem;">
+                <p><strong>Data Gaji Saat Ini:</strong></p>
+                <p>Jumlah Pasien: <strong>{{ dokter.jumlah_pasien }}</strong></p>
+                <p>Gaji Total: <strong>Rp {{ "{:,.0f}".format(dokter.gaji) }}</strong></p>
+                <small style="color: #6b7280;">Gaji akan dihitung ulang otomatis setelah disimpan</small>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-success">
+                    ✅ Update Data Dokter
+                </button>
+                <a href="{{ url_for('dokter') }}" class="btn btn-danger">
+                    ❌ Batal
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
